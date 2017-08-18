@@ -12,7 +12,7 @@ start [label =
 
 1
 [label =
-"<fn>nova.compute.api.attach_volume |\
+"<fn>nova.compute.api.API.attach_volume |\
 <f1>return self._attach_volume_shelved_offloaded(context,
                                                     instance,
                                                     volume_id,
@@ -26,7 +26,7 @@ start [label =
 start:f1 -> 1:fn
 
 2 [label =
-"<fn> nova.compute.api._attach_volume |\
+"<fn> nova.compute.api.API._attach_volume |\
 <f1> volume_bdm = self._create_volume_bdm(
             context, instance, device, volume_id, disk_bus=disk_bus,
             device_type=device_type) |\
@@ -37,7 +37,7 @@ start:f1 -> 1:fn
 1:f2 -> 2:fn
 
 6 [label =
-" <fn> nova.compute.api._check_attach_and_reserve_volume  |\
+" <fn> nova.compute.api.API._check_attach_and_reserve_volume  |\
 <f1>  volume = self.volume_api.get(context, volume_id) |\
 <f2>  self.volume_api.check_availability_zone(context, volume,
                                                 instance=instance) |\
@@ -54,7 +54,7 @@ start:f1 -> 1:fn
 2:f3 -> 7:fn [label="rpc call"]
 
 3 [label =
-"<fn> nova.compute.api._create_volume_bdm |\
+"<fn> nova.compute.api.API._create_volume_bdm |\
 <f1> volume_bdm = self.compute_rpcapi.reserve_block_device_name(
                 context, instance, device, volume_id, disk_bus=disk_bus,
                 device_type=device_type)
