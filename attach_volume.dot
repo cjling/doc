@@ -78,4 +78,26 @@ start:f1 -> 1:fn
 "];
 
 3:f1 -> 5:fn [label = "rpc call"]
+
+8 [label =
+" <fn>nova.objects.block_device.BlockDeviceMapping.create |\
+<f1>self._create(self._context)
+"]
+
+5:f3 -> 8:fn
+
+9 [label =
+" <fn> nova.objects.block_device.BlockDeviceMapping._create|\
+<f1> if update_or_create:
+            db_bdm = db.block_device_mapping_update_or_create(
+                    context, updates, legacy=False)
+        else:
+            db_bdm = db.block_device_mapping_create(
+                    context, updates, legacy=False)
+"]
+
+8:f1 -> 9:fn
+
+
+
 }
