@@ -1,0 +1,76 @@
+digraph g {
+
+graph [rankdir = "LR"];
+node [fontsize = "16" shape = "record" ];
+
+
+start [label =
+"<fn> nova.api.openstack.compute.volumes.VolumeAttachmentController.create    |\
+    <f1> device = self.compute_api.attach_volume(context, instance, volume_id, device)
+"];
+
+
+1 [label =
+"<fn> nova.compute.api.attach_volume |\
+    <f1> return self._attach_volume(context, instance, volume_id, device, disk_bus, device_type) |\
+    <f2> return self._attach_volume_shelved_offloaded(context,)
+"];
+
+
+2 [label =
+"<fn> nova.compute.api._attach_volume |\
+    <f1> volume_bdm = self._create_volume_bdm(context, instance, device, volume_id, disk_bus=disk_bus, device_type=device_type) |\
+    <f2> self._check_attach_and_reserve_volume(context, volume_id, instance) |\
+    <f3> self.compute_rpcapi.attach_volume(context, instance, volume_bdm)
+"];
+
+
+3 [label =
+"<fn> nova.compute.api._create_volume_bdm |\
+    <f1>
+        volume_bdm = self.compute_rpcapi.reserve_block_device_name(
+            context, instance, device, volume_id, disk_bus=disk_bus,
+            device_type=device_type)
+"];
+
+
+4 [label =
+"<fn>  nova.compute.rpcapi.reserve_block_device_name   |\
+    <f1> return cctxt.call(ctxt, 'reserve_block_device_name', **kw)
+"];
+
+
+5 [label =
+"<fn>  nova.compute.manager.reserve_block_device_name   |\
+    <f1>
+        new_bdm = objects.BlockDeviceMapping(
+                context=context,
+                source_type='volume', destination_type='volume',
+                instance_uuid=instance.uuid, boot_index=None,
+                volume_id=volume_id,
+                device_name=device, guest_format=None,
+                disk_bus=disk_bus, device_type=device_type) |\
+    <f2>
+        new_bdm.device_name = self._get_device_name_for_instance(
+                instance, bdms, new_bdm) |\
+
+    <f3>
+            new_bdm.create()
+"];
+
+
+/*
+sample [label =
+"<fn>     |\
+    <f1>
+"];
+*/
+
+
+start:f1 -> 1:fn
+1:f1 -> 2:fn
+2:f1 -> 3:fn
+3:f1 -> 4:fn
+4:f1 -> 5:fn
+
+}
