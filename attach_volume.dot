@@ -47,7 +47,7 @@ start:f1 -> 1:fn
 7 [label =
 "<fn>nova.compute.manager.ComputeManager.attach_volume  |\
 <f2>driver_bdm = driver_block_device.convert_volume(bdm) |\
-<f3>do_attach_volume(context, instance, driver_bdm)
+<f3>return self._attach_volume(context, instance, driver_bdm)
 "]
 
 2:f2 -> 6:fn  [label =
@@ -106,6 +106,16 @@ cdrom should set do_driver_attach=false"]
 "]
 
 8:f1 -> 9:fn
+
+10 [label =
+" <fn> nova.compute.manager.ComputeManager._attach_volume|\
+<f1> bdm.attach(context, instance, self.volume_api, self.driver,
+                       do_check_attach=False, do_driver_attach=True)
+"]
+
+7:f3 -> 10:fn
+
+
 
 
 
