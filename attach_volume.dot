@@ -51,14 +51,13 @@ start:f1 -> 1:fn
 "]
 
 2:f2 -> 6:fn  [label =
-" just check check
+" check volume
 "]
 2:f3 -> 7:fn [label=""]
 
 2:f3 -> 7:fn  [label =
 "rpc call
-will call libvirt interface to attach volume realtime
-cdrom should set do_driver_attach=false"]
+"]
 
 3 [label =
 "<fn> nova.compute.api.API._create_volume_bdm |\
@@ -67,9 +66,7 @@ cdrom should set do_driver_attach=false"]
                 device_type=device_type)
 "];
 
-2:f1 -> 3:fn  [label =
-" create block device mapping info in db
-"]
+2:f1 -> 3:fn
 
 5 [label =
 "<fn>  nova.compute.manager.ComputeManager.reserve_block_device_name   |\
