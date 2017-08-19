@@ -78,10 +78,7 @@ start:f1 -> 1:fn
 <f3>return self._attach_volume(context, instance, driver_bdm)
 "]
 
-2:f2 -> 6:fn  [label =
-" check volume
-"]
-
+2:f2 -> 6:fn
 2:f3 -> 7:fn  [label =
 "rpc call
 "]
