@@ -25,6 +25,34 @@ start [label =
 
 start:f1 -> 1:fn
 
+11 [label =
+" <fn>nova.compute.api.API._attach_volume_shelved_offloaded |\
+<f1>volume_bdm = self._create_volume_bdm(
+        context, instance, device, volume_id, disk_bus=disk_bus,
+        device_type=device_type, is_local_creation=True) |\
+<f2>self._check_attach_and_reserve_volume(context, volume_id, instance)|\
+<f3>self.volume_api.attach(context,
+                                   volume_id,
+                                   instance.uuid,
+                                   device)
+"]
+
+1:f1 -> 11:fn
+
+12 [label =
+" <fn> nova.compute.api.API._create_volume_bdm|\
+<f1> volume_bdm = objects.BlockDeviceMapping(
+                context=context,
+                source_type='volume', destination_type='volume',
+                instance_uuid=instance.uuid, boot_index=None,
+                volume_id=volume_id,
+                device_name=None, guest_format=None,
+                disk_bus=disk_bus, device_type=device_type)|\
+<f2>volume_bdm.create()
+"]
+
+11:f1 -> 12:fn
+
 2 [label =
 "<fn> nova.compute.api.API._attach_volume |\
 <f1> volume_bdm = self._create_volume_bdm(
