@@ -53,7 +53,6 @@ start:f1 -> 1:fn
 2:f2 -> 6:fn  [label =
 " check volume
 "]
-2:f3 -> 7:fn [label=""]
 
 2:f3 -> 7:fn  [label =
 "rpc call
