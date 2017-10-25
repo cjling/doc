@@ -4,11 +4,65 @@ graph [rankdir = "LR"];
 node [fontsize = "16" shape = "record" ];
 edge [fontsize = "12"];
 
+24374 [label =
+" <fn> nova.api.openstack.compute |\
+<f1> servers |\
+<f2> volumes |\
+<fe>
+"]
 
-start [label =
-"<fn> nova.api.openstack.compute.volumes.VolumeAttachmentController.create    |\
+
+4467 [label =
+" <fn> nova.api.openstack.compute.volumes |\
+<f1> SnapshotController |\
+<f2> VolumeAttachmentController |\
+<f3> VolumeController |\
+<fe>
+"]
+
+24374:f2 -> 4467:fn
+
+
+
+
+32443  [label =
+" <fn> nova.api.openstack.compute.volumes.VolumeAttachmentController |\
+<f1> create |\
+<fe>
+"]
+
+4467:f2 -> 32443:fn
+
+
+
+
+13059 [label =
+"<fn> nova.api.openstack.compute.volumes.VolumeAttachmentController.create |\
     <f1> device = self.compute_api.attach_volume(context, instance, volume_id, device)
 "];
+
+32443:f1 -> 13059:fn
+
+
+1451  [label =
+" <fn> nova.compute.api |\
+<f1> API |\
+<fe>
+"]
+
+
+24659  [label =
+" <fn> nova.compute.api.API |\
+<f1> attach_volume |\
+<f2> _attach_volume_shelved_offloaded |\
+<f3> _create_volume_bdm |\
+<fe>
+"]
+
+1451:f1 -> 24659:fn
+13059:f1 -> 24659:f1
+
+
 
 1
 [label =
@@ -23,7 +77,8 @@ start [label =
                                 disk_bus, device_type)
 "];
 
-start:f1 -> 1:fn
+24659:f1 -> 1:fn
+1:f1 -> 24659:f2
 
 11 [label =
 " <fn>nova.compute.api.API._attach_volume_shelved_offloaded |\
@@ -37,7 +92,6 @@ start:f1 -> 1:fn
                                    device)
 "]
 
-1:f1 -> 11:fn
 
 12 [label =
 " <fn> nova.compute.api.API._create_volume_bdm|\
@@ -135,8 +189,6 @@ start:f1 -> 1:fn
 "]
 
 7:f3 -> 10:fn
-
-
 
 
 
