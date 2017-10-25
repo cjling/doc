@@ -94,7 +94,12 @@ edge [fontsize = "12"];
                 volume_id=volume_id,
                 device_name=None, guest_format=None,
                 disk_bus=disk_bus, device_type=device_type)|\
-<f2>volume_bdm.create()
+<f2> volume_bdm.create() |\
+<f3> volume_bdm = self.compute_rpcapi.reserve_block_device_name(
+                context, instance, device, volume_id, disk_bus=disk_bus,
+                device_type=device_type) |\
+<fe>
+
 "]
 
 
@@ -116,6 +121,16 @@ edge [fontsize = "12"];
 <f3> self.volume_api.reserve_volume(context, volume_id)
 "]
 
+
+15455  [label =
+" <fn>nova.compute.manager.ComputeManager |\
+<f1>attach_volume|\
+<f2> _attach_volume |\
+<f3> reserve_block_device_name |\
+<fe>
+"]
+
+
 7 [label =
 "<fn>nova.compute.manager.ComputeManager.attach_volume  |\
 <f2>driver_bdm = driver_block_device.convert_volume(bdm) |\
@@ -124,7 +139,7 @@ edge [fontsize = "12"];
 
 
 3 [label =
-"<fn> nova.compute.api.API._create_volume_bdm |\
+"<fn> abandon nova.compute.api.API._create_volume_bdm |\
 <f1> volume_bdm = self.compute_rpcapi.reserve_block_device_name(
                 context, instance, device, volume_id, disk_bus=disk_bus,
                 device_type=device_type)
@@ -171,12 +186,15 @@ edge [fontsize = "12"];
 "]
 
 
+# blue [color="#0000ff"]
+# red [color="#ff0000"]
+
 24374:f2 -> 4467:fn
 
 4467:f2 -> 32443:fn
 
 32443:f1 -> 13059:fn
-13059:f1 -> 24659:f1
+13059:f1 -> 24659:f1 [color="#ff0000"]
 
 1451:f1 -> 24659:fn
 
@@ -184,19 +202,32 @@ edge [fontsize = "12"];
 24659:f2 -> 11:fn
 
 
-11:f1 -> 24659:f3
-11:f2 -> 24659:f5
+11:f1 -> 24659:f3 [color="#ff0000"]
+11:f2 -> 24659:f5 [color="#ff0000"]
 
 24659:f3 -> 12:fn
 
 
-7:f3 -> 10:fn
-1:f1 -> 24659:f2
-1:f2 -> 2:fn
-2:f2 -> 6:fn
-2:f3 -> 7:fn  [label = "rpc call"]
-2:f1 -> 3:fn
-3:f1 -> 5:fn [label = "rpc call"]
+
+1:f1 -> 24659:f2 [color="#ff0000"]
+1:f2 -> 24659:f4 [color="#ff0000"]
+24659:f4 -> 2:fn
+
+2:f1 -> 24659:f3 [color="#ff0000"]
+2:f2 -> 24659:f5 [color="#ff0000"]
+24659:f5 -> 6:fn
+
+2:f3 -> 15455:f1 [color="#ff0000" label = "rpc call"]
+15455:f1 -> 7:fn
+
+
+7:f3 -> 15455:f2 [color="#ff0000"]
+15455:f2 -> 10:fn
+
+
+12:f3 -> 15455:f3 [color="#ff0000" label = "rpc call"]
+15455:f3 -> 5:fn
+
 5:f3 -> 8:fn
 8:f1 -> 9:fn
 
