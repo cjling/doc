@@ -20,10 +20,6 @@ edge [fontsize = "12"];
 <fe>
 "]
 
-24374:f2 -> 4467:fn
-
-
-
 
 32443  [label =
 " <fn> nova.api.openstack.compute.volumes.VolumeAttachmentController |\
@@ -31,17 +27,11 @@ edge [fontsize = "12"];
 <fe>
 "]
 
-4467:f2 -> 32443:fn
-
-
-
 
 13059 [label =
 "<fn> nova.api.openstack.compute.volumes.VolumeAttachmentController.create |\
     <f1> device = self.compute_api.attach_volume(context, instance, volume_id, device)
 "];
-
-32443:f1 -> 13059:fn
 
 
 1451  [label =
@@ -56,11 +46,11 @@ edge [fontsize = "12"];
 <f1> attach_volume |\
 <f2> _attach_volume_shelved_offloaded |\
 <f3> _create_volume_bdm |\
+<f4> _attach_volume  |\
+<f5> _check_attach_and_reserve_volume  |\
 <fe>
 "]
 
-1451:f1 -> 24659:fn
-13059:f1 -> 24659:f1
 
 
 
@@ -77,8 +67,6 @@ edge [fontsize = "12"];
                                 disk_bus, device_type)
 "];
 
-24659:f1 -> 1:fn
-1:f1 -> 24659:f2
 
 11 [label =
 " <fn>nova.compute.api.API._attach_volume_shelved_offloaded |\
@@ -93,6 +81,10 @@ edge [fontsize = "12"];
 "]
 
 
+
+
+
+
 12 [label =
 " <fn> nova.compute.api.API._create_volume_bdm|\
 <f1> volume_bdm = objects.BlockDeviceMapping(
@@ -105,7 +97,6 @@ edge [fontsize = "12"];
 <f2>volume_bdm.create()
 "]
 
-11:f1 -> 12:fn
 
 2 [label =
 "<fn> nova.compute.api.API._attach_volume |\
@@ -116,7 +107,6 @@ edge [fontsize = "12"];
 <f3> self.compute_rpcapi.attach_volume(context, instance, volume_bdm)
 "];
 
-1:f2 -> 2:fn
 
 6 [label =
 " <fn> nova.compute.api.API._check_attach_and_reserve_volume  |\
@@ -132,10 +122,6 @@ edge [fontsize = "12"];
 <f3>return self._attach_volume(context, instance, driver_bdm)
 "]
 
-2:f2 -> 6:fn
-2:f3 -> 7:fn  [label =
-"rpc call
-"]
 
 3 [label =
 "<fn> nova.compute.api.API._create_volume_bdm |\
@@ -144,7 +130,6 @@ edge [fontsize = "12"];
                 device_type=device_type)
 "];
 
-2:f1 -> 3:fn
 
 5 [label =
 "<fn>  nova.compute.manager.ComputeManager.reserve_block_device_name   |\
@@ -161,14 +146,12 @@ edge [fontsize = "12"];
 <f3>new_bdm.create()
 "];
 
-3:f1 -> 5:fn [label = "rpc call"]
 
 8 [label =
 " <fn>nova.objects.block_device.BlockDeviceMapping.create |\
 <f1>self._create(self._context)
 "]
 
-5:f3 -> 8:fn
 
 9 [label =
 " <fn> nova.objects.block_device.BlockDeviceMapping._create|\
@@ -180,7 +163,6 @@ edge [fontsize = "12"];
                     context, updates, legacy=False)
 "]
 
-8:f1 -> 9:fn
 
 10 [label =
 " <fn> nova.compute.manager.ComputeManager._attach_volume|\
@@ -188,8 +170,34 @@ edge [fontsize = "12"];
                        do_check_attach=False, do_driver_attach=True)
 "]
 
+
+24374:f2 -> 4467:fn
+
+4467:f2 -> 32443:fn
+
+32443:f1 -> 13059:fn
+13059:f1 -> 24659:f1
+
+1451:f1 -> 24659:fn
+
+24659:f1 -> 1:fn
+24659:f2 -> 11:fn
+
+
+11:f1 -> 24659:f3
+11:f2 -> 24659:f5
+
+24659:f3 -> 12:fn
+
+
 7:f3 -> 10:fn
-
-
+1:f1 -> 24659:f2
+1:f2 -> 2:fn
+2:f2 -> 6:fn
+2:f3 -> 7:fn  [label = "rpc call"]
+2:f1 -> 3:fn
+3:f1 -> 5:fn [label = "rpc call"]
+5:f3 -> 8:fn
+8:f1 -> 9:fn
 
 }
