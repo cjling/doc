@@ -1,0 +1,143 @@
+digraph g {
+
+graph [rankdir = "LR"];
+node [fontsize = "16" shape = "record" ];
+edge [fontsize = "12"];
+
+
+start [label =
+"<fn> nova.api.openstack.compute.volumes.VolumeAttachmentController.create    |\
+    <f1> device = self.compute_api.attach_volume(context, instance, volume_id, device)
+"];
+
+1
+[label =
+"<fn>nova.compute.api.API.attach_volume |\
+<f1>return self._attach_volume_shelved_offloaded(context,
+                                                    instance,
+                                                    volume_id,
+                                                    device,
+                                                    disk_bus,
+                                                    device_type)  |\
+<f2>return self._attach_volume(context, instance, volume_id, device,
+                                disk_bus, device_type)
+"];
+
+start:f1 -> 1:fn
+
+11 [label =
+" <fn>nova.compute.api.API._attach_volume_shelved_offloaded |\
+<f1>volume_bdm = self._create_volume_bdm(
+        context, instance, device, volume_id, disk_bus=disk_bus,
+        device_type=device_type, is_local_creation=True) |\
+<f2>self._check_attach_and_reserve_volume(context, volume_id, instance)|\
+<f3>self.volume_api.attach(context,
+                                   volume_id,
+                                   instance.uuid,
+                                   device)
+"]
+
+1:f1 -> 11:fn
+
+12 [label =
+" <fn> nova.compute.api.API._create_volume_bdm|\
+<f1> volume_bdm = objects.BlockDeviceMapping(
+                context=context,
+                source_type='volume', destination_type='volume',
+                instance_uuid=instance.uuid, boot_index=None,
+                volume_id=volume_id,
+                device_name=None, guest_format=None,
+                disk_bus=disk_bus, device_type=device_type)|\
+<f2>volume_bdm.create()
+"]
+
+11:f1 -> 12:fn
+
+2 [label =
+"<fn> nova.compute.api.API._attach_volume |\
+<f1> volume_bdm = self._create_volume_bdm(
+            context, instance, device, volume_id, disk_bus=disk_bus,
+            device_type=device_type) |\
+<f2> self._check_attach_and_reserve_volume(context, volume_id, instance) |\
+<f3> self.compute_rpcapi.attach_volume(context, instance, volume_bdm)
+"];
+
+1:f2 -> 2:fn
+
+6 [label =
+" <fn> nova.compute.api.API._check_attach_and_reserve_volume  |\
+<f1>  volume = self.volume_api.get(context, volume_id) |\
+<f2>  self.volume_api.check_availability_zone(context, volume,
+                                                instance=instance) |\
+<f3> self.volume_api.reserve_volume(context, volume_id)
+"]
+
+7 [label =
+"<fn>nova.compute.manager.ComputeManager.attach_volume  |\
+<f2>driver_bdm = driver_block_device.convert_volume(bdm) |\
+<f3>return self._attach_volume(context, instance, driver_bdm)
+"]
+
+2:f2 -> 6:fn
+2:f3 -> 7:fn  [label =
+"rpc call
+"]
+
+3 [label =
+"<fn> nova.compute.api.API._create_volume_bdm |\
+<f1> volume_bdm = self.compute_rpcapi.reserve_block_device_name(
+                context, instance, device, volume_id, disk_bus=disk_bus,
+                device_type=device_type)
+"];
+
+2:f1 -> 3:fn
+
+5 [label =
+"<fn>  nova.compute.manager.ComputeManager.reserve_block_device_name   |\
+<f1> new_bdm = objects.BlockDeviceMapping(
+                    context=context,
+                    source_type='volume', destination_type='volume',
+                    instance_uuid=instance.uuid,
+                    volume_id=volume_id,
+                    device_name=device, guest_format=None,
+                    boot_index=boot_index,
+                    disk_bus=disk_bus, device_type=device_type) |\
+<f2> new_bdm.device_name = self._get_device_name_for_instance(
+                    instance, bdms, new_bdm, bdm_as_boot=bdm_as_boot) |\
+<f3>new_bdm.create()
+"];
+
+3:f1 -> 5:fn [label = "rpc call"]
+
+8 [label =
+" <fn>nova.objects.block_device.BlockDeviceMapping.create |\
+<f1>self._create(self._context)
+"]
+
+5:f3 -> 8:fn
+
+9 [label =
+" <fn> nova.objects.block_device.BlockDeviceMapping._create|\
+<f1> if update_or_create:
+            db_bdm = db.block_device_mapping_update_or_create(
+                    context, updates, legacy=False)
+        else:
+            db_bdm = db.block_device_mapping_create(
+                    context, updates, legacy=False)
+"]
+
+8:f1 -> 9:fn
+
+10 [label =
+" <fn> nova.compute.manager.ComputeManager._attach_volume|\
+<f1> bdm.attach(context, instance, self.volume_api, self.driver,
+                       do_check_attach=False, do_driver_attach=True)
+"]
+
+7:f3 -> 10:fn
+
+
+
+
+
+}
